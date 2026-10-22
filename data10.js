@@ -1,38 +1,47 @@
 const fs = require('fs');
-const file = __dirname + '/data10.json';
 
 const loadInfo = () => {
   try {
-    return JSON.parse(fs.readFileSync(file, 'utf8'));
+    const dataJson = fs.readFileSync('data10.json').toString();
+    return JSON.parse(dataJson);
   } catch {
     return [];
   }
 };
 
 const savealldata = (allData) => {
-  fs.writeFileSync(file, JSON.stringify(allData, null, 2));
+  const saveallDataJson = JSON.stringify(allData, null, 2);
+  fs.writeFileSync('data10.json', saveallDataJson);
 };
 
-const addPerson = (id, fname, lname, age, city) => {
+const addPerson = (id, fname, lname, city, age) => {
   const allData = loadInfo();
-  const duplicate = allData.filter(person => person.id === id);
+  const duplicatedData = allData.filter((obj) => {
+    return obj.id === id;
+  });
 
-  if (duplicate.length > 0) {
-    console.log('This ID already exists');
-  } else {
-    allData.push({ id, fname, lname, age, city });
+  if (duplicatedData.length === 0 && allData.length < 10) {
+    allData.push({ id, fname, lname, city, age });
     savealldata(allData);
     console.log('Person added');
+  } else {
+    console.log('Duplicate ID or the list already has 10 people');
   }
 };
 
 const deleteData = (id) => {
   const allData = loadInfo();
-  const remaining = allData.filter(person => person.id !== id);
-  savealldata(remaining);
-  console.log(remaining.length < allData.length ? 'Person deleted' : 'Person not found');
+  const dataToKeep = allData.filter((obj) => {
+    return obj.id !== id;
+  });
+
+  savealldata(dataToKeep);
+  console.log(dataToKeep.length < allData.length ? 'Person deleted' : 'Person not found');
 };
 
-const deleteAllData = () => savealldata([]);
+const deleteAll = () => {
+  savealldata([]);
+  console.log('All people deleted');
+};
 
-module.exports = { addPerson, loadInfo, deleteData, deleteAllData };
+module.exports = { addPerson, loadInfo, deleteData, deleteAll };
