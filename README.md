@@ -1,25 +1,22 @@
-# Assignment 1 - People Manager (Node.js)
+# Back-end Task 1
 
-A simple terminal program for managing 10 people's data using JavaScript and Node.js.
+Node.js terminal program for managing the data of 10 people.
 
-## How to run
-
-1. Install Node.js.
-2. Open a terminal in this project folder.
-3. Run:
+Run:
 
 ```bash
 node app.js
 ```
 
-## Features
+The program uses `data10.js` for the functions and `data10.json` to save the people, like the class exercise.
 
-1. Enter data for 10 people (ID, first name, last name, age and city).
-2. View all people or search for a person by ID.
-3. Delete all people or delete someone by ID.
-4. Show each person's full name and city.
-5. Exit the program.
+Menu:
+1. Enter 10 people (ID, first name, last name, age, city). This replaces the sample data after confirmation.
+2. Show everyone.
+3. Search for someone by ID.
+4. Delete everyone.
+5. Delete a specific person by ID.
+6. Print each person's full name and city.
+7. Exit.
 
-Select a number from the menu and follow the prompts.
-
-No external packages are required. Data is stored in memory while the program is running, and is cleared after exit.
+There are 10 example people in the JSON file to try the display and delete options. Choose option 1 to replace them with your own inputs. Changes are saved in the JSON file.
