@@ -1,61 +1,38 @@
 const fs = require('fs');
-const path = require('path');
-const fileName = path.join(__dirname, 'data10.json');
+const file = __dirname + '/data10.json';
 
-// Read people from the JSON file
 const loadInfo = () => {
   try {
-    const dataJson = fs.readFileSync(fileName).toString();
-    return JSON.parse(dataJson);
-  } catch (error) {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
     return [];
   }
 };
 
-// Save the new list after adding or deleting someone
 const savealldata = (allData) => {
-  fs.writeFileSync(fileName, JSON.stringify(allData, null, 2));
+  fs.writeFileSync(file, JSON.stringify(allData, null, 2));
 };
 
-const addPerson = (id, fname, lname, city, age) => {
+const addPerson = (id, fname, lname, age, city) => {
   const allData = loadInfo();
-  const duplicatedData = allData.filter((obj) => {
-    return obj.id === id;
-  });
+  const duplicate = allData.filter(person => person.id === id);
 
-  if (duplicatedData.length === 0 && allData.length < 10) {
-    allData.push({ id, fname, lname, city, age });
+  if (duplicate.length > 0) {
+    console.log('This ID already exists');
+  } else {
+    allData.push({ id, fname, lname, age, city });
     savealldata(allData);
     console.log('Person added');
-    return true;
-  } else {
-    console.log('Duplicate ID or the list is full');
-    return false;
   }
 };
 
 const deleteData = (id) => {
   const allData = loadInfo();
-  const dataToKeep = allData.filter((obj) => {
-    return obj.id !== id;
-  });
-
-  if (dataToKeep.length === allData.length) {
-    console.log('Person not found');
-  } else {
-    savealldata(dataToKeep);
-    console.log('Person deleted');
-  }
+  const remaining = allData.filter(person => person.id !== id);
+  savealldata(remaining);
+  console.log(remaining.length < allData.length ? 'Person deleted' : 'Person not found');
 };
 
-const deleteAllData = () => {
-  savealldata([]);
-  console.log('All people deleted');
-};
+const deleteAllData = () => savealldata([]);
 
-module.exports = {
-  addPerson,
-  loadInfo,
-  deleteData,
-  deleteAllData
-};
+module.exports = { addPerson, loadInfo, deleteData, deleteAllData };
