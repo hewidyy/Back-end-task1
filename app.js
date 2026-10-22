@@ -6,34 +6,25 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-function ask(message) {
-  return new Promise((resolve) => {
-    rl.question(message, resolve);
-  });
-}
+const ask = (message) => new Promise(resolve => rl.question(message, resolve));
 
 async function main() {
   let choice = '';
 
   while (choice !== '7') {
-    console.log('\n--- People Menu ---');
-    console.log('1 - Enter data of 10 people');
-    console.log('2 - Show all people');
-    console.log('3 - Show one person');
-    console.log('4 - Delete all people');
-    console.log('5 - Delete one person');
-    console.log('6 - Show full names and cities');
-    console.log('7 - Exit');
-
+    console.log('\n1. Enter 10 people');
+    console.log('2. View all people');
+    console.log('3. View one person');
+    console.log('4. Delete all people');
+    console.log('5. Delete one person');
+    console.log('6. Full names and cities');
+    console.log('7. Exit');
     choice = (await ask('Choose: ')).trim();
 
     if (choice === '1') {
       if (data.loadInfo().length > 0) {
-        const answer = (await ask('Replace the current people? (y/n): ')).trim().toLowerCase();
-        if (answer !== 'y') {
-          console.log('Nothing changed');
-          continue;
-        }
+        const answer = await ask('Replace current data? (y/n): ');
+        if (answer.toLowerCase().trim() !== 'y') continue;
         data.deleteAllData();
       }
 
@@ -45,44 +36,37 @@ async function main() {
         const age = Number(await ask('Age: '));
         const city = (await ask('City: ')).trim();
 
-        if (!Number.isInteger(id) || id <= 0 || !fname || !lname || !Number.isInteger(age) || age <= 0 || !city) {
-          console.log('Invalid data, try again');
+        if (!Number.isInteger(id) || id <= 0 || !fname || !lname ||
+            !Number.isInteger(age) || age <= 0 || !city) {
+          console.log('Invalid data');
           continue;
         }
-        data.addPerson(id, fname, lname, city, age);
+        data.addPerson(id, fname, lname, age, city);
       }
 
     } else if (choice === '2') {
-      const people = data.loadInfo();
-      if (people.length === 0) console.log('No people found');
-      else console.table(people);
+      console.table(data.loadInfo());
 
     } else if (choice === '3') {
-      const id = Number(await ask('Enter ID: '));
-      const people = data.loadInfo();
-      const person = people.find((obj) => obj.id === id);
-      if (person) console.log(person);
-      else console.log('Person not found');
+      const id = Number(await ask('ID: '));
+      const person = data.loadInfo().find(person => person.id === id);
+      console.log(person || 'Person not found');
 
     } else if (choice === '4') {
       data.deleteAllData();
+      console.log('All people deleted');
 
     } else if (choice === '5') {
-      const id = Number(await ask('Enter ID: '));
+      const id = Number(await ask('ID: '));
       data.deleteData(id);
 
     } else if (choice === '6') {
       const people = data.loadInfo();
-      if (people.length === 0) console.log('No people found');
       for (let i = 0; i < people.length; i++) {
         console.log(people[i].fname + ' ' + people[i].lname + ' - ' + people[i].city);
       }
-
-    } else if (choice !== '7') {
-      console.log('Choose a number from 1 to 7');
     }
   }
-
   rl.close();
 }
 
